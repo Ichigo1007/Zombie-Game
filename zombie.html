@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ZOMBIE APOCALYPSE: SURVIVAL ASSESSMENT</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Eater&family=IM+Fell+English+SC&display=swap');
+
+  /* --- BODY AND BACKGROUND --- */
+  body {
+    background: 
+      radial-gradient(ellipse at center, #050d03 0%, #000000 100%),
+      url('https://i.imgur.com/JQJQJQJ.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: #b9f442;
+    font-family: 'IM Fell English SC', serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Blood Drips */
+  .blood-drip {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.15;
+  }
+
+  .drip {
+    position: absolute;
+    width: 3px;
+    background: #8a0303;
+    animation: dripFall linear infinite;
+  }
+
+  @keyframes dripFall {
+    0% { height: 0; opacity: 0; }
+    10% { opacity: 1; }
+    100% { height: 100px; opacity: 0; }
+  }
+
+  /* MIST/Fog Animation Background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABsSURBVGhD7cExAQAwDMCg+zfdm1hI5qVJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiTp5QKQYQIZe0SFAQAAAABJRU5ErkJggg==') repeat;
+    opacity: 0.3;
+    pointer-events: none;
+    animation: mistMove 120s linear infinite;
+    z-index: -1;
+  }
+
+  @keyframes mistMove {
+    0% { background-position: 0 0; }
+    100% { background-position: 1000px 0; }
+  }
+
+  /* --- HEADER --- */
+  h1 {
+    font-family: 'Eater', cursive;
+    font-size: 4rem;
+    margin: 30px 0 10px;
+    color: #d11a1a;
+    text-shadow:
+      0 0 5px #000,
+      0 0 10px #8a0303,
+      0 0 20px #5a0000,
+      0 0 30px #3a0000;
+    user-select: none;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .subtitle {
+    font-family: 'Creepster', cursive;
+    color: #7efc4f;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-shadow:
+      0 0 5px #4caf50,
+      0 0 10px #7efc4f;
+    letter-spacing: 3px;
+  }
+
+  /* --- ZOMBIE FIGURE ANIMATION --- */
+  .zombie-figure {
+    font-size: 6rem;
+    margin: 15px 0 30px;
+    color: #7efc4f;
+    text-shadow:
+      0 0 5px #4caf50,
+      0 0 15px #7efc4f,
+      0 0 25px #4caf50;
+    animation: floatSway 3s ease-in-out infinite;
+    user-select: none;
+    filter: drop-shadow(0 0 5px #7efc4f);
+    z-index: 2;
+    position: relative;
+  }
+
+  .zombie-figure::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 20px;
+    background: radial-gradient(ellipse at center, rgba(122,252,79,0.5) 0%, rgba(0,0,0,0) 70%);
+    animation: pulse 2s infinite alternate;
+  }
+
+  @keyframes floatSway {
+    0% { transform: translateY(0) rotate(-7deg); }
+    50% { transform: translateY(-15px) rotate(7deg); }
+    100% { transform: translateY(0) rotate(-7deg); }
+  }
+
+  @keyframes pulse {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.8; }
+  }
+
+  /* --- QUIZ CONTAINER --- */
+  .quiz-container {
+    background: rgba(5, 15, 2, 0.9);
+    border-radius: 2px;
+    padding: 30px 35px;
+    width: 90vw;
+    max-width: 700px;
+    box-shadow:
+      0 0 20px rgba(122, 252, 79, 0.3),
+      inset 0 0 30px rgba(26, 61, 0, 0.7);
+    position: relative;
+    z-index: 1;
+    border: 1px solid #3a3a00;
+    margin-bottom: 50px;
+  }
+
+  .quiz-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #d11a1a, transparent);
+    animation: scanline 3s linear infinite;
+  }
+
+  @keyframes scanline {
+    0% { top: 0; }
+    100% { top: 100%; }
+  }
+
+  /* --- QUESTIONS --- */
+  .question {
+    margin-bottom: 25px;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: #a6ff8a;
+    letter-spacing: 1px;
+    text-shadow:
+      0 0 5px #4caf50,
+      0 0 10px #a6ff8a;
+    line-height: 1.4;
+    border-bottom: 1px solid #3a3a00;
+    padding-bottom: 15px;
+    font-family: 'IM Fell English SC', serif;
+  }
+
+  /* --- ANSWERS --- */
+  .answers {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 35px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .answers li {
+    background: rgba(18, 45, 5, 0.7);
+    margin-bottom: 0;
+    padding: 16px 25px;
+    border-radius: 2px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #b9f442;
+    text-shadow:
+      0 0 3px #70b917;
+    transition: all 0.4s ease;
+    user-select: none;
+    box-shadow: 0 0 4px #224d06;
+    border: 1px solid #3a3a00;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .answers li::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(122, 252, 79, 0.3), transparent);
+    transition: 0.5s;
+  }
+
+  .answers li:hover::before {
+    left: 100%;
+  }
+
+  .answers li:hover,
+  .answers li.selected {
+    background: rgba(71, 212, 34, 0.8);
+    color: #0a1a00;
+    box-shadow:
+      0 0 15px rgba(144, 255, 69, 0.8),
+      0 0 30px rgba(122, 252, 79, 0.5),
+      0 0 45px rgba(76, 175, 80, 0.3);
+    transform: scale(1.02);
+    border-color: #7efc4f;
+    z-index: 2;
+  }
+
+  .answers li.selected {
+    animation: selectedPulse 1.5s infinite;
+  }
+
+  @keyframes selectedPulse {
+    0% { box-shadow: 0 0 15px rgba(144, 255, 69, 0.8), 0 0 30px rgba(122, 252, 79, 0.5), 0 0 45px rgba(76, 175, 80, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(144, 255, 69, 1), 0 0 40px rgba(122, 252, 79, 0.8), 0 0 60px rgba(76, 175, 80, 0.5); }
+    100% { box-shadow: 0 0 15px rgba(144, 255, 69, 0.8), 0 0 30px rgba(122, 252, 79, 0.5), 0 0 45px rgba(76, 175, 80, 0.3); }
+  }
+
+  /* --- BUTTON --- */
+  button {
+    background-color: #4caf50;
+    border: none;
+    padding: 16px 35px;
+    font-size: 1.3rem;
+    border-radius: 2px;
+    cursor: pointer;
+    color: #000;
+    font-weight: 900;
+    letter-spacing: 2px;
+    box-shadow:
+      0 0 15px rgba(122, 252, 79, 0.5),
+      0 0 30px rgba(76, 175, 80, 0.3);
+    transition: all 0.3s ease;
+    user-select: none;
+    display: block;
+    margin: 0 auto;
+    min-width: 180px;
+    text-transform: uppercase;
+    font-family: 'Creepster', cursive;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #3a3a00;
+  }
+
+  button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+    transform: rotate(45deg);
+    transition: 0.5s;
+  }
+
+  button:hover::before {
+    left: 100%;
+    top: 100%;
+  }
+
+  button:hover:not(:disabled) {
+    background-color: #2e7d32;
+    box-shadow:
+      0 0 25px rgba(163, 255, 111, 0.8),
+      0 0 50px rgba(136, 255, 127, 0.5);
+    color: #000;
+  }
+
+  button:disabled {
+    background-color: #1a3d00;
+    cursor: not-allowed;
+    box-shadow: none;
+    color: #3a3a00;
+  }
+
+  /* --- PROGRESS BAR --- */
+  .progress-container {
+    width: 100%;
+    height: 6px;
+    background: #0a1a00;
+    margin-bottom: 30px;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px #000;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #7efc4f);
+    width: 0%;
+    transition: width 0.5s ease;
+    position: relative;
+  }
+
+  .progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: progressShine 2s infinite;
+  }
+
+  @keyframes progressShine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* --- RESULT --- */
+  .result {
+    font-size: 1.4rem;
+    margin-top: 35px;
+    line-height: 1.6;
+    white-space: pre-line;
+    color: #c0ff8a;
+    text-shadow:
+      0 0 5px #5e8c25,
+      0 0 10px #90ff45;
+    user-select: none;
+    font-family: 'IM Fell English SC', serif;
+    border-top: 1px solid #3a3a00;
+    padding-top: 20px;
+  }
+
+  .result-score {
+    font-family: 'Eater', cursive;
+    color: #d11a1a;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-shadow:
+      0 0 5px #000,
+      0 0 10px #8a0303;
+  }
+
+  /* --- FOOTER --- */
+  .footer {
+    margin-top: auto;
+    padding: 20px;
+    font-size: 0.9rem;
+    color: #4caf50;
+    text-align: center;
+    width: 100%;
+    background: rgba(5, 15, 2, 0.7);
+    border-top: 1px solid #3a3a00;
+  }
+
+  /* --- SMALL SCREENS --- */
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2.8rem;
+    }
+    .subtitle {
+      font-size: 1.2rem;
+    }
+    .zombie-figure {
+      font-size: 4.5rem;
+    }
+    .quiz-container {
+      padding: 25px 20px;
+    }
+    .question {
+      font-size: 1.3rem;
+    }
+    .answers li {
+      font-size: 1.1rem;
+      padding: 14px 20px;
+    }
+    button {
+      font-size: 1.1rem;
+      padding: 14px 25px;
+    }
+  }
+
+  /* --- CRT EFFECT --- */
+  .crt::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(18, 16, 16, 0.1);
+    opacity: 0.2;
+    z-index: 9999;
+    pointer-events: none;
+    background: 
+      linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+      linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
+  }
+
+  /* --- FLICKER EFFECT --- */
+  @keyframes flicker {
+    0% { opacity: 0.9; }
+    5% { opacity: 0.8; }
+    10% { opacity: 0.9; }
+    15% { opacity: 0.85; }
+    20% { opacity: 0.9; }
+    25% { opacity: 0.95; }
+    30% { opacity: 0.85; }
+    35% { opacity: 0.9; }
+    40% { opacity: 0.8; }
+    45% { opacity: 0.9; }
+    50% { opacity: 0.95; }
+    55% { opacity: 0.9; }
+    60% { opacity: 0.85; }
+    65% { opacity: 0.9; }
+    70% { opacity: 0.8; }
+    75% { opacity: 0.9; }
+    80% { opacity: 0.85; }
+    85% { opacity: 0.9; }
+    90% { opacity: 0.95; }
+    95% { opacity: 0.9; }
+    100% { opacity: 0.9; }
+  }
+
+  .flicker {
+    animation: flicker 0.5s infinite;
+  }
+
+  /* --- SCARY MESSAGE --- */
+  .scary-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #d11a1a;
+    font-family: 'Eater', cursive;
+    font-size: 3rem;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s;
+  }
+
+  .scary-message.show {
+    opacity: 1;
+  }
+
+  .scary-message img {
+    max-width: 300px;
+    margin-bottom: 30px;
+    filter: drop-shadow(0 0 10px #d11a1a);
+  }
+
+  /* --- LOADING SCREEN --- */
+  .loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 9998;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #7efc4f;
+    font-family: 'Creepster', cursive;
+  }
+
+  .loading-text {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px #7efc4f;
+  }
+
+  .loading-bar {
+    width: 300px;
+    height: 10px;
+    background: #0a1a00;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 10px #7efc4f;
+  }
+
+  .loading-progress {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #0a1a00, #7efc4f, #0a1a00);
+    animation: loading 3s ease-in-out infinite;
+  }
+
+  @keyframes loading {
+    0% { width: 0%; }
+    50% { width: 100%; }
+    100% { width: 0%; }
+  }
+</style>
+</head>
+<body class="crt">
+
+<!-- Blood Drips -->
+<div class="blood-drip" id="bloodDrip"></div>
+
+<!-- Loading Screen -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="zombie-figure">🧟‍♂️</div>
+  <div class="loading-text">INITIALIZING SURVIVAL PROTOCOLS</div>
+  <div class="loading-bar">
+    <div class="loading-progress"></div>
+  </div>
+</div>
+
+<!-- Scary Message (for random jumpscare) -->
+<div class="scary-message" id="scaryMessage">
+  <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjZGIxYTEzIiBkPSJNNDQ4IDMyYzAgMTcuNy0xNC4zIDMyLTMyIDMySDk2Yy0xNy43IDAtMzItMTQuMy0zMi0zMnMxNC4zLTMyIDMyLTMyaDMyMGMxNy43IDAgMzIgMTQuMyAzMiAzMnpNMzg0IDEyOGMwIDE3LjctMTQuMyAzMi0zMiAzMkgxNjBjLTE3LjcgMC0zMi0xNC4zLTMyLTMyczE0LjMtMzIgMzItMzJoMTkyYzE3LjcgMCAzMiAxNC4zIDMyIDMyek0zMjAgMjI0YzAgMTcuNy0xNC4zIDMyLTMyIDMySDE2MGMtMTcuNyAwLTMyLTE0LjMtMzItMzJzMTQuMy0zMiAzMi0zMmgxMjhjMTcuNyAwIDMyIDE0LjMgMzIgMzJ6TTI4OCAzMjBjMCAxNy43LTE0LjMgMzItMzIgMzJIMTYwYy0xNy43IDAtMzItMTQuMy0zMi0zMnMxNC4zLTMyIDMyLTMyaDk2YzE3LjcgMCAzMiAxNC4zIDMyIDMyek0yMjQgNDE2YzAgMTcuNy0xNC4zIDMyLTMyIDMySDE2MGMtMTcuNyAwLTMyLTE0LjMtMzItMzJzMTQuMy0zMiAzMi0zMmgzMmMxNy43IDAgMzIgMTQuMyAzMiAzMnoiLz48L3N2Zz4=" alt="Warning">
+  <div>YOUR CHOICES HAVE CONSEQUENCES</div>
+</div>
+
+<h1>ZOMBIE APOCALYPSE</h1>
+<div class="subtitle">SURVIVAL ASSESSMENT PROTOCOL</div>
+<div class="zombie-figure">🧟‍♂️🧟‍♀️🧟</div>
+
+<div class="quiz-container">
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div id="quiz"></div>
+  <button id="nextBtn">BEGIN ASSESSMENT</button>
+  <div id="result" class="result"></div>
+</div>
+
+<div class="footer">
+  CLASSIFIED // PROJECT ZED-9 // UNAUTHORIZED ACCESS PROHIBITED
+</div>
+
+<script>
+  // Enhanced questions with more horror elements
+  const questions = [
+    {
+      question: "YOUR SAFEHOUSE IS ENGULFED IN FLAMES. SCREAMS ECHO FROM THE STREET. WHAT DO YOU SAVE?",
+      answers: [
+        { text: "YOUR LOYAL DOG (NOW WHIMPERING IN FEAR)", score: [10,20] },
+        { text: "A FEW RUSTED FOOD CANS (YOUR LAST MEAL?)", score: [5,10] },
+        { text: "YOUR BLOODSTAINED CLOTHES (THEY'VE SEEN TOO MUCH)", score: [3,3] },
+        { text: "YOUR DEAD CELL PHONE (LAST CONNECTION TO THE PAST)", score: [3,3] },
+      ]
+    },
+    {
+      question: "THE ARCTIC NIGHT APPROACHES. WITHOUT HEAT, YOU'LL FREEZE. BUT NOISE ATTRACTS THEM. WHAT DO YOU DO?",
+      answers: [
+        { text: "KEEP MOVING (YOUR TEETH CHATTER LOUDER THAN YOUR STEPS)", score: [3,3] },
+        { text: "BUILD A TINY FIRE (THE FLICKERING LIGHT MIGHT BETRAY YOU)", score: [10,20] },
+        { text: "BUILD A NORMAL FIRE (THE LIGHT WILL BE SEEN FOR MILES)", score: [3,3] },
+        { text: "WAIT IT OUT (THE COLD WILL CREEP INTO YOUR BONES)", score: [5,10] },
+      ]
+    },
+    {
+      question: "CORNERED IN A RANSACKED GROCERY STORE. ONLY A RUSTED KNIFE IN HAND. THE HORDE CLOSES IN. WHAT NOW?",
+      answers: [
+        { text: "FIGHT THROUGH (YOUR BLADE WILL BREAK BEFORE THEY DO)", score: [5,10] },
+        { text: "CLIMB THE WOBBLY SHELVES (THEY MIGHT HOLD... OR NOT)", score: [10,20] },
+        { text: "SHOUT FOR HELP (BUT WHO WOULD ANSWER?)", score: [3,3] },
+        { text: "END IT YOURSELF (QUICKER THAN THEIR TEETH)", score: [3,3] },
+      ]
+    },
+    {
+      question: "THROUGH THE BINOCULARS, YOU SPOT SURVIVORS. ONE LIMPS BADLY. THEY HAVEN'T SEEN YOU YET. WHAT DO YOU DO?",
+      answers: [
+        { text: "WATCH AND WAIT (THE LIMP COULD MEAN A BITE)", score: [10,20] },
+        { text: "AVOID THEM (TRUST NO ONE)", score: [3,3] },
+        { text: "AMBUSH THEM (TAKE THEIR SUPPLIES)", score: [5,10] },
+        { text: "CALL OUT (THEY MIGHT BE FRIENDLY... OR HUNGRY)", score: [3,3] },
+      ]
+    },
+    {
+      question: "A RAIDING PARTY HAS YOU AT GUNPOINT. THEY TAKE YOUR GEAR AND ORDER YOU INTO A RUSTED CONTAINER. WHAT NOW?",
+      answers: [
+        { text: "COMPLY (LIVE TO FIGHT ANOTHER DAY)", score: [10,20] },
+        { text: "PLEAD FOR MERCY (THEY'VE HEARD IT ALL BEFORE)", score: [3,3] },
+        { text: "REFUSE (THE BULLET WILL BE QUICK)", score: [3,3] },
+        { text: "ATTACK (YOU MIGHT TAKE ONE WITH YOU)", score: [5,10] },
+      ]
+    },
+    {
+      question: "DOWN TO THE LAST CAN OF FOOD WITH 3 OTHERS. THEIR EYES ARE HOLLOW WITH HUNGER. WHAT'S YOUR MOVE?",
+      answers: [
+        { text: "SHARE IT (WILL IT BE ENOUGH FOR ANYONE?)", score: [5,10] },
+        { text: "EAT IT YOURSELF (YOU NEED THE STRENGTH MORE)", score: [10,20] },
+        { text: "GIVE IT AWAY (YOUR SACRIFICE WILL BE FORGOTTEN)", score: [3,3] },
+        { text: "DESTROY IT (NO ARGUMENTS IF THERE'S NOTHING LEFT)", score: [3,3] },
+      ]
+    },
+    {
+      question: "CHOOSE YOUR WEAPON CAREFULLY. YOUR LIFE DEPENDS ON IT.",
+      answers: [
+        { text: "KATANA (GLORIOUS... UNTIL IT CHIPS ON SKULL)", score: [3,3] },
+        { text: "CROSSBOW (SILENT BUT SLOW TO RELOAD)", score: [10,20] },
+        { text: "PISTOL (LOUD BUT EFFECTIVE... UNTIL AMMO RUNS OUT)", score: [5,10] },
+        { text: "RPG (OVERKILL AND WILL ATTRACT MORE)", score: [3,3] },
+      ]
+    },
+    {
+      question: "YOUR PACK HAS ROOM FOR ONE MORE ITEM OF FOOD. CHOOSE WISELY.",
+      answers: [
+        { text: "TRAIL MIX (NUTRITIOUS BUT BORING)", score: [3,3] },
+        { text: "CRACKERS (WILL TURN TO DUST IN YOUR PACK)", score: [3,3] },
+        { text: "OREO COOKIES (A SWEET REMINDER OF BETTER TIMES)", score: [10,20] },
+        { text: "RAW CHICKEN (RISKY BUT HIGH PROTEIN)", score: [5,10] },
+      ]
+    },
+    {
+      question: "TIME TO ESTABLISH A PERMANENT CAMP. WHERE WILL YOU MAKE YOUR LAST STAND?",
+      answers: [
+        { text: "BY THE RIVER (WATER SOURCE BUT EXPOSED)", score: [10,20] },
+        { text: "IN THE MOUNTAINS (DEFENSIBLE BUT ISOLATED)", score: [5,10] },
+        { text: "NEAR THE OCEAN (ESCAPE ROUTE BUT LIMITED RESOURCES)", score: [3,3] },
+        { text: "CITY EDGE (RESOURCES BUT DANGEROUS)", score: [3,3] },
+      ]
+    },
+    {
+      question: "YOUR CAMP OF 20 IS OVERRUN. THE SCREAMS ARE EVERYWHERE. WHAT'S YOUR ESCAPE PLAN?",
+      answers: [
+        { text: "FOLLOW OTHERS (SAFETY IN NUMBERS... OR MORE TARGETS)", score: [3,3] },
+        { text: "RUN BLINDLY (PRAY YOU DON'T HIT A DEAD END)", score: [3,3] },
+        { text: "FIGHT TO SAVE THE CAMP (A HERO'S LAST STAND)", score: [10,20] },
+        { text: "GRAB YOUR GEAR FIRST (YOU'LL NEED SUPPLIES)", score: [5,10] },
+      ]
+    }
+  ];
+
+  // Game state
+  let currentQuestionIndex = -1;
+  let totalScore = 0;
+  let quizEl = document.getElementById("quiz");
+  let nextBtn = document.getElementById("nextBtn");
+  let resultEl = document.getElementById("result");
+  let progressBar = document.getElementById("progressBar");
+  let loadingScreen = document.getElementById("loadingScreen");
+  let scaryMessage = document.getElementById("scaryMessage");
+  let bloodDrip = document.getElementById("bloodDrip");
+
+  // Create blood drips
+  function createBloodDrips() {
+    for (let i = 0; i < 20; i++) {
+      const drip = document.createElement('div');
+      drip.classList.add('drip');
+      drip.style.left = `${Math.random() * 100}%`;
+      drip.style.animationDelay = `${Math.random() * 20}s`;
+      drip.style.animationDuration = `${5 + Math.random() * 10}s`;
+      bloodDrip.appendChild(drip);
+    }
+  }
+
+  // Random jumpscare
+  function triggerJumpscare() {
+    if (Math.random() < 0.3) { // 30% chance
+      scaryMessage.classList.add('show');
+      setTimeout(() => {
+        scaryMessage.classList.remove('show');
+      }, 2000);
+    }
+  }
+
+  // Show loading screen
+  function showLoadingScreen() {
+    loadingScreen.style.display = 'flex';
+    setTimeout(() => {
+      loadingScreen.style.display = 'none';
+    }, 3000);
+  }
+
+  // Update progress bar
+  function updateProgress() {
+    const progress = ((currentQuestionIndex) / questions.length) * 100;
+    progressBar.style.width = `${progress}%`;
+  }
+
+  // Show current question
+  function showQuestion() {
+    resultEl.textContent = "";
+    nextBtn.textContent = currentQuestionIndex < questions.length - 1 ? "NEXT QUESTION" : "SEE YOUR FATE";
+    updateProgress();
+
+    const q = questions[currentQuestionIndex];
+    let html = `<div class="question">${q.question}</div><ul class="answers">`;
+
+    q.answers.forEach((ans, i) => {
+      html += `<li data-score-min="${ans.score[0]}" data-score-max="${ans.score[1]}">${ans.text}</li>`;
+    });
+    html += "</ul>";
+
+    quizEl.innerHTML = html;
+
+    const answersEls = document.querySelectorAll(".answers li");
+    answersEls.forEach(el => {
+      el.addEventListener("click", () => {
+        answersEls.forEach(a => {
+          a.style.backgroundColor = "rgba(18, 45, 5, 0.7)";
+          a.style.color = "#b9f442";
+          a.classList.remove("selected");
+        });
+        el.style.backgroundColor = "rgba(71, 212, 34, 0.8)";
+        el.style.color = "#0a1a00";
+        el.classList.add("selected");
+        nextBtn.disabled = false;
+        nextBtn.dataset.scoreMin = el.getAttribute("data-score-min");
+        nextBtn.dataset.scoreMax = el.getAttribute("data-score-max");
+      });
+      
+      // Add hover sound effect
+      el.addEventListener("mouseenter", () => {
+        playSound('hover');
+      });
+    });
+    nextBtn.disabled = true;
+  }
+
+  // Sound effects
+  function playSound(type) {
+    const sounds = {
+      hover: ['https://assets.mixkit.co/sfx/preview/mixkit-horror-ambience-228.mp3'],
+      click: ['https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.mp3'],
+      scream: ['https://assets.mixkit.co/sfx/preview/mixkit-woman-screams-291.mp3'],
+      zombie: ['https://assets.mixkit.co/sfx/preview/mixkit-zombie-growl-260.mp3']
+    };
+    
+    // In a real project, you would actually play sounds here
+    // For this demo, we'll just trigger jumpscares sometimes
+    if (type === 'hover' && Math.random() < 0.1) {
+      triggerJumpscare();
+    }
+  }
+
+  // Show final result
+  function showResult() {
+    const percentage = Math.min(200, totalScore); // max limit for safety
+    updateProgress();
+
+    let message = "";
+    let resultClass = "";
+    
+    if (percentage <= 5) {
+      message = `YOUR SCORE: ${percentage}\n\nYOU WOULD BE AMONG THE FIRST TO FALL.\n\nAS THE OUTBREAK BEGINS, YOU PANIC. YOUR SCREAMS ATTRACT THEM. YOU DIE WITHIN HOURS, YOUR FLESH TORN APART BY DOZENS OF ROTTING MOUTHS.\n\nYOUR REMAINS BECOME PART OF THE HORDE.`;
+      resultClass = "bad";
+    } else if (percentage <= 20) {
+      message = `YOUR SCORE: ${percentage}\n\nYOU LAST A FEW TERRIFYING HOURS.\n\nIN THE INITIAL CHAOS, YOU TRY TO ESCAPE BY CAR. THE ROADS ARE JAMMED. THEY SURROUND YOUR VEHICLE. GLASS SHATTERS. YOU DIE SCREAMING AS TEETH SINK INTO YOUR FLESH.\n\nYOUR LAST THOUGHT: "IT HURTS SO MUCH."`;
+      resultClass = "bad";
+    } else if (percentage <= 50) {
+      message = `YOUR SCORE: ${percentage}\n\nYOU SURVIVE SEVERAL DAYS OF HELL.\n\nYOU REACH AN EMERGENCY SHELTER, BUT IT'S OVERCROWDED. WHEN THEY BREACH THE DOORS, IT'S CHAOS. YOU'RE TRAMPLED BY THE CROWD BEFORE THE ZOMBIES EVEN REACH YOU.\n\nYOUR BROKEN BODY RISES MINUTES LATER.`;
+      resultClass = "medium";
+    } else if (percentage <= 80) {
+      message = `YOUR SCORE: ${percentage}\n\nYOU LAST A MONTH IN THIS NIGHTMARE.\n\nYOU FIND A GROUP AND BUILD A CAMP. FOR A WHILE, THERE'S HOPE. THEN ONE NIGHT, THE WALLS BREAK. YOU'RE BITTEN IN THE CHAOS. AS THE FEVER TAKES YOU, YOU BEG YOUR FRIENDS TO END IT.\n\nTHEY COMPLY.`;
+      resultClass = "medium";
+    } else if (percentage <= 110) {
+      message = `YOUR SCORE: ${percentage}\n\nSEVERAL MONTHS OF SURVIVAL.\n\nYOUR GROUP MOVES FROM SAFEHOUSE TO SAFEHOUSE. YOU SETTLE IN AN ABANDONED SCHOOL. WHILE LOADING YOUR CROSSBOW, IT DISCHARGES. THE BOLT PIERCES YOUR HEART.\n\nYOUR LAST SIGHT: YOUR FRIENDS' HORRIFIED FACES.`;
+      resultClass = "good";
+    } else if (percentage <= 130) {
+      message = `YOUR SCORE: ${percentage}\n\nYOU ENDURE FOR YEARS.\n\nYOUR GROUP FORTIFIES A SMALL TOWN. LIFE IS HARD BUT BEARABLE. ON A SUPPLY RUN, YOU FALL THROUGH A ROTTED FLOOR. YOUR SCREAMS AS THEY CONVERGE WILL HAUNT YOUR FRIENDS FOREVER.\n\nYOUR NAME IS REMEMBERED.`;
+      resultClass = "good";
+    } else {
+      message = `YOUR SCORE: ${percentage}\n\nYOU BECOME A LEGEND.\n\nLEADING YOUR GROUP TO A COASTAL TOWN, YOU BUILD "Z-LAND" - A SAFE HAVEN. DECADES PASS. YOU DIE PEACEFULLY AT 79, SURROUNDED BY LOVED ONES.\n\nYOUR STATUE STANDS FOR CENTURIES.\n\nYOU ARE THE LAST HOPE OF HUMANITY.`;
+      resultClass = "excellent";
+    }
+
+    quizEl.innerHTML = "";
+    nextBtn.style.display = "none";
+    resultEl.innerHTML = `<div class="result-score">SURVIVAL ASSESSMENT COMPLETE</div>${message.replace(/\n\n/g, '</div><div class="result-section">')}`;
+    
+    // Add flicker effect for dramatic result
+    if (resultClass === "bad") {
+      resultEl.classList.add('flicker');
+    }
+    
+    // Random chance to trigger zombie sound at the end
+    if (Math.random() < 0.5) {
+      setTimeout(() => {
+        playSound('zombie');
+      }, 2000);
+    }
+  }
+
+  // Initialize
+  function init() {
+    createBloodDrips();
+    showLoadingScreen();
+    
+    // Start quiz after loading
+    setTimeout(() => {
+      nextBtn.addEventListener("click", () => {
+        playSound('click');
+        
+        if (currentQuestionIndex === -1) {
+          currentQuestionIndex = 0;
+          totalScore = 0;
+          nextBtn.textContent = "NEXT QUESTION";
+          showQuestion();
+          return;
+        }
+
+        const min = parseInt(nextBtn.dataset.scoreMin || "0", 10);
+        const max = parseInt(nextBtn.dataset.scoreMax || "0", 10);
+        totalScore += getRandomInt(min, max);
+
+        currentQuestionIndex++;
+
+        if (currentQuestionIndex < questions.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      });
+    }, 3000);
+  }
+
+  // Helper function
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // Start the quiz
+  init();
+</script>
+
+</body>
+</html>
